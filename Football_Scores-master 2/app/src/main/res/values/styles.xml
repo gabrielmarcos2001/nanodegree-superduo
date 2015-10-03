@@ -1,0 +1,30 @@
+<resources>
+
+    <style name="Theme.footballScores.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+
+        <!-- colorPrimary is used for the default action bar background -->
+        <item name="colorPrimary">@color/fb_blue_1</item>
+
+        <!-- colorPrimaryDark is used for the status bar -->
+        <item name="colorPrimaryDark">@color/fb_blue_2</item>
+
+        <!-- colorAccent is used as the default value for colorControlActivated,
+        which is used to tint widgets -->
+        <item name="colorAccent">@color/fb_yellow_1</item>
+
+        <item name="android:actionBarTabTextStyle">@style/MyTabTextStyle</item>
+
+    </style>
+
+    <style name="toolbar_theme">
+        <item name="colorControlNormal">@color/fb_yellow_1</item>
+    </style>
+
+    <style name="MyTabTextStyle" parent="@android:style/Widget.ActionBar.TabText">
+        <item name="android:actionMenuTextAppearance">@android:style/TextAppearance.Medium</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:actionMenuTextColor">@color/fb_clouds</item>
+    </style>
+
+</resources>
