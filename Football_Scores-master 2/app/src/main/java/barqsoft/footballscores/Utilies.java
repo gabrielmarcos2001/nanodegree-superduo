@@ -5,23 +5,31 @@ package barqsoft.footballscores;
  */
 public class Utilies {
 
-    public static final int SERIE_A = 357;
-    public static final int PREMIER_LEGAUE = 354;
+    public static final int SERIE_A = 401;
+    public static final int PREMIER_LEAGUE = 398;
     public static final int CHAMPIONS_LEAGUE = 362;
-    public static final int PRIMERA_DIVISION = 358;
-    public static final int BUNDESLIGA = 351;
+    public static final int PRIMERA_DIVISION = 399;
+    public static final int BUNDESLIGA = 394;
+    public static final int BUNDESLIGA2 = 395;
 
-    public static String getLeague(int league_num) {
-        switch (league_num) {
+    /**
+     * Gets the League name from its id
+     * @param leagueNum
+     * @return
+     */
+    public static String getLeague(int leagueNum) {
+        switch (leagueNum) {
             case SERIE_A:
                 return "Seria A";
-            case PREMIER_LEGAUE:
+            case PREMIER_LEAGUE:
                 return "Premier League";
             case CHAMPIONS_LEAGUE:
                 return "UEFA Champions League";
             case PRIMERA_DIVISION:
                 return "Primera Division";
             case BUNDESLIGA:
+                return "Bundesliga";
+            case BUNDESLIGA2:
                 return "Bundesliga";
             default:
                 return "Not known League Please report";

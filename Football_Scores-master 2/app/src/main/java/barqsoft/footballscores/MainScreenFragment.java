@@ -3,6 +3,7 @@ package barqsoft.footballscores;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -14,47 +15,47 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import barqsoft.footballscores.service.DataFetchService;
+import java.util.ArrayList;
+
+import barqsoft.footballscores.model.Match;
 
 /**
  * A placeholder fragment containing a simple view.
  */
 public class MainScreenFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
-    public ScoresAdapter mAdapter;
+
     public static final int SCORES_LOADER = 0;
-    private String[] fragmentdate = new String[1];
-    private int last_selected_item = -1;
 
-    private View loader;
-    private View emptyView;
-    private SwipeRefreshLayout swipeLayout;
+    public ScoresAdapter mAdapter;
+    private String[] mFragmentDate = new String[1];
+    private View mLoader;
+    private View mEmptyView;
+    private SwipeRefreshLayout mSwipeLayout;
 
+    /**
+     * Constructor
+     */
     public MainScreenFragment() {
+
     }
 
-    private void updateScores() {
-        Intent service_start = new Intent(getActivity(), DataFetchService.class);
-        getActivity().startService(service_start);
-    }
-
-    public void setFragmentDate(String date) {
-        fragmentdate[0] = date;
+    public void setmFragmentDate(String date) {
+        mFragmentDate[0] = date;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              final Bundle savedInstanceState) {
 
-        updateScores();
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        loader = rootView.findViewById(R.id.loader);
-        emptyView = rootView.findViewById(R.id.empty_list);
-        emptyView.setVisibility(View.GONE);
+        mLoader = rootView.findViewById(R.id.loader);
+        mEmptyView = rootView.findViewById(R.id.empty_list);
+        mEmptyView.setVisibility(View.GONE);
 
-        swipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
-        swipeLayout.setOnRefreshListener(this);
-        swipeLayout.setColorSchemeResources(R.color.fb_green_1,
+        mSwipeLayout = (SwipeRefreshLayout) rootView.findViewById(R.id.swipe_container);
+        mSwipeLayout.setOnRefreshListener(this);
+        mSwipeLayout.setColorSchemeResources(R.color.fb_green_1,
                 R.color.fb_yellow_1,
                 R.color.fb_green_1,
                 R.color.fb_yellow_1);
@@ -66,7 +67,7 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
         scoreList.setAdapter(mAdapter);
         getLoaderManager().initLoader(SCORES_LOADER, null, this);
 
-        mAdapter.detail_match_id = MainActivity.selectedMatchId;
+        mAdapter.detail_match_id = MainActivity.mSelectedMatchId;
 
         scoreList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -74,8 +75,9 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
 
                 ViewHolder selected = (ViewHolder) view.getTag();
                 mAdapter.detail_match_id = selected.match_id;
-                MainActivity.selectedMatchId = (int) selected.match_id;
+                MainActivity.mSelectedMatchId = (int) selected.match_id;
                 mAdapter.notifyDataSetChanged();
+
             }
         });
 
@@ -84,39 +86,26 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
-        return new CursorLoader(getActivity(), DatabaseContract.scores_table.buildScoreWithDate(),
-                null, null, fragmentdate, null);
+
+        // Creates a loader for getting the scores with the current date
+        return new CursorLoader(getActivity(), DatabaseContract.ScoresTable.buildScoreWithDate(),
+                null, null, mFragmentDate, null);
     }
+
 
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
-        //Log.v(FetchScoreTask.LOG_TAG,"loader finished");
-        //cursor.moveToFirst();
-        /*
-        while (!cursor.isAfterLast())
-        {
-            Log.v(FetchScoreTask.LOG_TAG,cursor.getString(1));
-            cursor.moveToNext();
-        }
-        */
 
-        int i = 0;
-        cursor.moveToFirst();
-        while (!cursor.isAfterLast()) {
-            i++;
-            cursor.moveToNext();
-        }
-        //Log.v(FetchScoreTask.LOG_TAG,"Loader query: " + String.valueOf(i));
         mAdapter.swapCursor(cursor);
-        loader.setVisibility(View.GONE);
-        swipeLayout.setRefreshing(false);
+        mLoader.setVisibility(View.GONE);
+        mSwipeLayout.setRefreshing(false);
 
         if (mAdapter.getCount() == 0) {
-            emptyView.setVisibility(View.VISIBLE);
+            mEmptyView.setVisibility(View.VISIBLE);
         }else {
-            emptyView.setVisibility(View.GONE);
+            mEmptyView.setVisibility(View.GONE);
         }
-        //mAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -126,6 +115,8 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onRefresh() {
-        updateScores();
+        if (getActivity() instanceof  MainActivity) {
+            ((MainActivity) getActivity()).updateScores();
+        }
     }
 }

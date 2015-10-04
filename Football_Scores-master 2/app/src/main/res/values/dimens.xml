@@ -10,4 +10,8 @@
 
     <dimen name="list_divider">5dp</dimen>
     <dimen name="loader">80dp</dimen>
+
+    <dimen name="widget_min_height">180dp</dimen>
+    <dimen name="widget_min_width">320dp</dimen>
+    <dimen name="widget_padding">10dp</dimen>
 </resources>

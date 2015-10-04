@@ -2,13 +2,14 @@ package barqsoft.footballscores;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-
+/**
+ * Activity for displaying the About Fragment
+ */
 public class AboutActivity extends AppCompatActivity {
 
     @Override
@@ -29,6 +30,7 @@ public class AboutActivity extends AppCompatActivity {
     public static class PlaceholderFragment extends Fragment {
 
         public PlaceholderFragment() {
+
         }
 
         @Override

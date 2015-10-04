@@ -1,11 +1,14 @@
 package barqsoft.footballscores;
 
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import barqsoft.footballscores.service.DataFetchService;
 
 /**
  * Main Activity
@@ -15,28 +18,34 @@ import android.view.MenuItem;
  */
 public class MainActivity extends AppCompatActivity {
 
-    public static int selectedMatchId;
-    public static int currentFragment = 2;
     private static final String FRAGMENT_TAG = "pager_fragment";
 
-    private PagerFragment pagerFragment;
+    public static int mSelectedMatchId;
+    public static int mCurrentFragment = 2;
+
+    private PagerFragment mPagerFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Used for testing layout mirroring
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1){
+            //getWindow().getDecorView().setLayoutDirection(View.LAYOUT_DIRECTION_RTL);
+        }
+
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
 
-            pagerFragment = new PagerFragment();
+            mPagerFragment = new PagerFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, pagerFragment, FRAGMENT_TAG)
+                    .add(R.id.container, mPagerFragment, FRAGMENT_TAG)
                     .commit();
-        } else {
-
-            //pagerFragment = (PagerFragment) getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG);
-
         }
+
+        // Updates the scores when the activity is created
+        updateScores();
     }
 
 
@@ -65,10 +74,11 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("currentPage", pagerFragment.mPagerHandler.getCurrentItem());
-        outState.putInt("selectedMatch", selectedMatchId);
 
-        getSupportFragmentManager().putFragment(outState, FRAGMENT_TAG, pagerFragment);
+        outState.putInt("currentPage", mPagerFragment.mPagerHandler.getCurrentItem());
+        outState.putInt("selectedMatch", mSelectedMatchId);
+
+        getSupportFragmentManager().putFragment(outState, FRAGMENT_TAG, mPagerFragment);
 
         super.onSaveInstanceState(outState);
     }
@@ -76,10 +86,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
 
-        currentFragment = savedInstanceState.getInt("currentPage");
-        selectedMatchId = savedInstanceState.getInt("selectedMatch");
-        pagerFragment = (PagerFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_TAG);
+        mCurrentFragment = savedInstanceState.getInt("currentPage");
+        mSelectedMatchId = savedInstanceState.getInt("selectedMatch");
+        mPagerFragment = (PagerFragment) getSupportFragmentManager().getFragment(savedInstanceState, FRAGMENT_TAG);
 
         super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    /**
+     * Starts the service for updating scores
+     */
+    public void updateScores() {
+        Intent scoresService = new Intent(this, DataFetchService.class);
+        startService(scoresService);
     }
 }

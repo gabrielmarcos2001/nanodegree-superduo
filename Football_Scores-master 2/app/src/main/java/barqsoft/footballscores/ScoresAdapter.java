@@ -26,7 +26,7 @@ public class ScoresAdapter extends CursorAdapter {
     public static final int COL_MATCHTIME = 2;
     public double detail_match_id = 0;
 
-    private String FOOTBALL_SCORES_HASHTAG = "#Football_Scores";
+    private final String FOOTBALL_SCORES_HASHTAG = "#FootballScores";
 
     public ScoresAdapter(Context context, Cursor cursor, int flags) {
         super(context, cursor, flags);
@@ -36,8 +36,8 @@ public class ScoresAdapter extends CursorAdapter {
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
 
         View mItem = LayoutInflater.from(context).inflate(R.layout.scores_list_item, parent, false);
-        ViewHolder mHolder = new ViewHolder(mItem);
-        mItem.setTag(mHolder);
+        ViewHolder holder = new ViewHolder(mItem);
+        mItem.setTag(holder);
 
         return mItem;
     }
@@ -45,18 +45,18 @@ public class ScoresAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, final Context context, Cursor cursor) {
 
-        final ViewHolder mHolder = (ViewHolder) view.getTag();
+        final ViewHolder holder = (ViewHolder) view.getTag();
 
-        mHolder.homeName.setText(cursor.getString(COL_HOME));
-        mHolder.awayName.setText(cursor.getString(COL_AWAY));
-        mHolder.date.setText(cursor.getString(COL_MATCHTIME));
-        mHolder.score.setText(Utilies.getScores(cursor.getInt(COL_HOME_GOALS), cursor.getInt(COL_AWAY_GOALS)));
-        mHolder.match_id = cursor.getDouble(COL_ID);
+        holder.homeName.setText(cursor.getString(COL_HOME));
+        holder.awayName.setText(cursor.getString(COL_AWAY));
+        holder.date.setText(cursor.getString(COL_MATCHTIME));
+        holder.score.setText(Utilies.getScores(cursor.getInt(COL_HOME_GOALS), cursor.getInt(COL_AWAY_GOALS)));
+        holder.match_id = cursor.getDouble(COL_ID);
 
-        mHolder.homeCrest.setImageResource(Utilies.getTeamCrestByTeamName(
+        holder.homeCrest.setImageResource(Utilies.getTeamCrestByTeamName(
                 cursor.getString(COL_HOME)));
 
-        mHolder.awayCrest.setImageResource(Utilies.getTeamCrestByTeamName(
+        holder.awayCrest.setImageResource(Utilies.getTeamCrestByTeamName(
                 cursor.getString(COL_AWAY)
         ));
 
@@ -66,7 +66,7 @@ public class ScoresAdapter extends CursorAdapter {
         View v = vi.inflate(R.layout.detail_fragment, null);
         ViewGroup container = (ViewGroup) view.findViewById(R.id.details_fragment_container);
 
-        if (mHolder.match_id == detail_match_id) {
+        if (holder.match_id == detail_match_id) {
 
             container.addView(v, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT
                     , ViewGroup.LayoutParams.MATCH_PARENT));
@@ -83,8 +83,8 @@ public class ScoresAdapter extends CursorAdapter {
                 @Override
                 public void onClick(View v) {
                     //add Share Action
-                    context.startActivity(createShareForecastIntent(mHolder.homeName.getText() + " "
-                            + mHolder.score.getText() + " " + mHolder.awayName.getText() + " "));
+                    context.startActivity(createShareForecastIntent(holder.homeName.getText() + " "
+                            + holder.score.getText() + " " + holder.awayName.getText() + " "));
                 }
             });
 
