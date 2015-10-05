@@ -20,7 +20,7 @@ public abstract class SearchableFragment extends Fragment {
     public static final String MESSAGE_KEY = "MESSAGE_EXTRA";
     public static final String BOOK_KEY = "BOOK_EXTRA";
 
-    private BroadcastReceiver messageReciever;
+    private BroadcastReceiver mMessageReceiver;
 
     public abstract void showMessage(String message);
 
@@ -30,9 +30,9 @@ public abstract class SearchableFragment extends Fragment {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-            if(intent.getStringExtra(MESSAGE_KEY)!=null){
+            if (intent.getStringExtra(MESSAGE_KEY) != null) {
                 showMessage(intent.getStringExtra(MESSAGE_KEY));
-            }else if (intent.getExtras().getParcelable(BOOK_KEY) != null) {
+            } else if (intent.getExtras().getParcelable(BOOK_KEY) != null) {
                 newBookDataFetched((Book) intent.getExtras().getParcelable(BOOK_KEY));
             }
         }
@@ -42,15 +42,15 @@ public abstract class SearchableFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        messageReciever = new MessageReciever();
+        mMessageReceiver = new MessageReciever();
         IntentFilter filter = new IntentFilter(MESSAGE_EVENT);
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(messageReciever, filter);
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, filter);
 
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(messageReciever);
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
     }
 }

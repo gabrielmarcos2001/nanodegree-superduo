@@ -77,11 +77,11 @@ public class SearchableEditText extends MaterialEditText implements TextWatcher 
 
         String value = s.toString();
 
-        if(value.length()==10 && !value.startsWith("978")){
-            value="978"+value;
+        if (value.length() == 10 && !value.startsWith("978")) {
+            value = "978" + value;
         }
 
-        if(value.length()<13){
+        if (value.length() < 13) {
             return;
         }
 

@@ -37,10 +37,6 @@
                 android:value=".MainActivity" />
         </activity>
 
-        <!-- Scanner activity -->
-        <activity android:name=".ScannerActivity"/>
-
-
         <activity android:name=".BookDetailActivity"/>
 
         <!-- Content-provider for getting the books data -->

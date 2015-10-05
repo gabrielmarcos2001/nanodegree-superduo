@@ -32,7 +32,9 @@ public class BookDataPanel extends RelativeLayout {
 
     public interface BookPanelActions {
         void onCancelClicked();
+
         void onSaveClicked(Book book);
+
         void onDeleteClicked(Book book);
     }
 
@@ -66,6 +68,12 @@ public class BookDataPanel extends RelativeLayout {
     @Bind(R.id.fullBookCover)
     ImageView mFullBookCover;
 
+    @Bind(R.id.confirm_area)
+    View mDeleteConfirm;
+
+    @Bind(R.id.buttons_area)
+    View mButtonsArea;
+
     private int mode = MODE_NEW_BOOK;
 
     private BookPanelActions mInterface;
@@ -93,6 +101,7 @@ public class BookDataPanel extends RelativeLayout {
         mBackground.setVisibility(View.INVISIBLE);
         mPanel.setVisibility(View.GONE);
         mActionsPanel.setVisibility(View.GONE);
+        mDeleteConfirm.setVisibility(View.GONE);
     }
 
     @OnClick(R.id.save_button)
@@ -102,8 +111,19 @@ public class BookDataPanel extends RelativeLayout {
             if (mode == MODE_NEW_BOOK)
                 mInterface.onSaveClicked(mBook);
             else
-                mInterface.onDeleteClicked(mBook);
+                showConfirmArea();
         }
+    }
+
+    @OnClick(R.id.yes)
+    void onConfirmDeleteClicked() {
+        if (mode != MODE_NEW_BOOK)
+            mInterface.onDeleteClicked(mBook);
+    }
+
+    @OnClick(R.id.cancel)
+    void onCancelDeleteClicked() {
+        hideConfirmArea();
     }
 
     @OnClick(R.id.delete_button)
@@ -187,6 +207,7 @@ public class BookDataPanel extends RelativeLayout {
 
     /**
      * Sets the book data to the view
+     *
      * @param data
      */
     public void setBookData(Book data) {
@@ -197,7 +218,7 @@ public class BookDataPanel extends RelativeLayout {
 
         if (data.subTitle.isEmpty()) {
             mFullBookSubTitle.setText(getContext().getString(R.string.not_available));
-        }else {
+        } else {
             mFullBookSubTitle.setText(data.subTitle);
         }
 
@@ -209,18 +230,18 @@ public class BookDataPanel extends RelativeLayout {
 
         if (authorsBuilder.toString().isEmpty()) {
             mAuthors.setText(getContext().getString(R.string.not_available));
-        }else {
+        } else {
             mAuthors.setText(authorsBuilder.toString());
         }
 
-        if(Patterns.WEB_URL.matcher(data.imageUrl).matches()){
+        if (Patterns.WEB_URL.matcher(data.imageUrl).matches()) {
 
             // Loads the product image
             Picasso.with(getContext())
                     .load(data.imageUrl)
                     .into(mFullBookCover);
 
-        }else {
+        } else {
 
             // Show default image
             mFullBookCover.setImageResource(R.drawable.book_default);
@@ -235,7 +256,7 @@ public class BookDataPanel extends RelativeLayout {
 
         if (categoriesBuilder.toString().isEmpty()) {
             mCategories.setText(getContext().getString(R.string.not_available));
-        }else {
+        } else {
             mCategories.setText(categoriesBuilder.toString());
         }
 
@@ -251,9 +272,71 @@ public class BookDataPanel extends RelativeLayout {
         if (mode == MODE_NEW_BOOK) {
             mSaveButton.setText(getContext().getString(R.string.add_to_list_uppercase));
             mAddedIndicator.setVisibility(View.GONE);
-        }else {
+        } else {
             mSaveButton.setText(getContext().getString(R.string.delete_book_uppercase));
             mAddedIndicator.setVisibility(View.VISIBLE);
         }
+    }
+
+    /**
+     * Shows the Delete Confirm Area
+     */
+    public void showConfirmArea() {
+
+        if (mDeleteConfirm.getVisibility() == View.VISIBLE) return;
+
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.show_from_right);
+        mDeleteConfirm.setVisibility(View.VISIBLE);
+        mDeleteConfirm.startAnimation(animation);
+
+        Animation hideAnim = AnimationUtils.loadAnimation(getContext(), R.anim.hide_to_left);
+        mButtonsArea.startAnimation(hideAnim);
+        hideAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mButtonsArea.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    /**
+     * Hides the Delete Confirm Area
+     */
+    public void hideConfirmArea() {
+
+        if (mDeleteConfirm.getVisibility() == View.GONE) return;
+
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.show_from_left);
+        mButtonsArea.setVisibility(View.VISIBLE);
+        mButtonsArea.startAnimation(animation);
+
+        Animation hideAnim = AnimationUtils.loadAnimation(getContext(), R.anim.hide_to_right);
+        mDeleteConfirm.startAnimation(hideAnim);
+        hideAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mDeleteConfirm.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 }

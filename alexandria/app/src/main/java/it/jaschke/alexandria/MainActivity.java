@@ -43,9 +43,9 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
         IS_TABLET = isTablet();
 
-        if(IS_TABLET){
+        if (IS_TABLET) {
             setContentView(R.layout.activity_main_tablet);
-        }else {
+        } else {
             setContentView(R.layout.activity_main);
         }
 
@@ -144,9 +144,9 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         Bundle args = new Bundle();
         args.putString(BookDetail.EAN_KEY, ean);
 
-        if(findViewById(R.id.right_container) != null){
+        if (findViewById(R.id.right_container) != null) {
 
-            args.putBoolean(BookDetail.TABLET,true);
+            args.putBoolean(BookDetail.TABLET, true);
 
             BookDetail fragment = new BookDetail();
             fragment.setArguments(args);
@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
                     .addToBackStack("Book Detail")
                     .commit();
 
-        }else {
+        } else {
 
 
             Intent i = new Intent(this, BookDetailActivity.class);
@@ -169,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     }
 
-    public void goBack(View view){
+    public void goBack(View view) {
         getSupportFragmentManager().popBackStack();
     }
 

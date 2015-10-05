@@ -30,9 +30,10 @@ public class Book implements Parcelable {
 
     /**
      * Parcel Constructor
+     *
      * @param in
      */
-    public Book(Parcel in){
+    public Book(Parcel in) {
         readFromParcel(in);
     }
 
@@ -55,6 +56,7 @@ public class Book implements Parcelable {
 
     /**
      * Reads the address data from a parcel object
+     *
      * @param in
      */
     private void readFromParcel(Parcel in) {

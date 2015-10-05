@@ -149,27 +149,73 @@
         <RelativeLayout
             android:id="@+id/actions_area"
             android:layout_width="match_parent"
-            android:layout_height="50dip"
+            android:layout_height="54dp"
             android:background="@color/flat_black"
             android:layout_alignParentBottom="true">
 
-            <Button
-                android:id="@+id/delete_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/close_uppercase"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_toLeftOf="@+id/save_button"
-                />
+            <RelativeLayout
+                android:id="@+id/buttons_area"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/save_button"
-                android:layout_width="wrap_content"
+                <Button
+                    android:id="@+id/delete_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/close_uppercase"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_toLeftOf="@+id/save_button"
+                    />
+
+                <Button
+                    android:id="@+id/save_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ok_button"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:layout_alignParentRight="true"
+                    />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/confirm_area"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/ok_button"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_alignParentRight="true"
-                />
+                android:layout_centerVertical="true"
+                >
+
+                <TextView
+                    android:id="@+id/question"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="left|center_vertical"
+                    android:text="@string/are_your_sure"
+                    android:textColor="@color/clouds"
+                    android:layout_marginLeft="10dp"
+                    />
+
+                <TextView
+                    android:id="@+id/cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:gravity="center"
+                    android:layout_alignParentRight="true"
+                    android:text="@string/cancel_button"
+                    />
+
+                <TextView
+                    android:id="@+id/yes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:gravity="center"
+                    android:layout_toLeftOf="@+id/cancel"
+                    android:text="@string/yes"
+                    />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 

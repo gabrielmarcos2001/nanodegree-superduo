@@ -36,9 +36,7 @@ public class AddBook extends SearchableFragment implements LoaderManager.LoaderC
     private final int LOADER_ID = 1;
     private View rootView;
 
-
-    private final String EAN_CONTENT="eanContent";
-
+    private final String EAN_CONTENT = "eanContent";
     private String eanValue = "";
 
     @Bind(R.id.progress_wheel)
@@ -55,7 +53,7 @@ public class AddBook extends SearchableFragment implements LoaderManager.LoaderC
     /**
      * Fragment Constructor
      */
-    public AddBook(){
+    public AddBook() {
 
     }
 
@@ -66,7 +64,7 @@ public class AddBook extends SearchableFragment implements LoaderManager.LoaderC
         super.onSaveInstanceState(outState);
 
         // Saves the ean value
-        if(mEanTextField!=null) {
+        if (mEanTextField != null) {
             outState.putString(EAN_CONTENT, mEanTextField.getText().toString());
         }
     }
@@ -76,7 +74,7 @@ public class AddBook extends SearchableFragment implements LoaderManager.LoaderC
 
         rootView = inflater.inflate(R.layout.fragment_add_book, container, false);
 
-        ButterKnife.bind(this,rootView);
+        ButterKnife.bind(this, rootView);
 
         hideLoader();
 
@@ -138,12 +136,12 @@ public class AddBook extends SearchableFragment implements LoaderManager.LoaderC
             }
         });
 
-        if(savedInstanceState!=null){
+        if (savedInstanceState != null) {
 
             mEanTextField.setText(savedInstanceState.getString(EAN_CONTENT));
             mEanTextField.setHint("");
 
-            mScannerFragment = (ScannerFragment)getChildFragmentManager().findFragmentByTag("scanner");
+            mScannerFragment = (ScannerFragment) getChildFragmentManager().findFragmentByTag("scanner");
 
             if (mScannerFragment != null) {
                 mScannerFragment.setmInterface(this);
@@ -156,7 +154,7 @@ public class AddBook extends SearchableFragment implements LoaderManager.LoaderC
     @OnClick(R.id.scan_button)
     void onScanClicked() {
 
-        mScannerFragment = (ScannerFragment)getChildFragmentManager().findFragmentByTag("scanner");
+        mScannerFragment = (ScannerFragment) getChildFragmentManager().findFragmentByTag("scanner");
 
         if (mScannerFragment == null) {
             mScannerFragment = ScannerFragment.newInstance();
@@ -186,14 +184,14 @@ public class AddBook extends SearchableFragment implements LoaderManager.LoaderC
         valueChanged(number);
     }
 
-    private void restartLoader(){
+    private void restartLoader() {
         getLoaderManager().restartLoader(LOADER_ID, null, this);
     }
 
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
 
-        if(eanValue.length()==0){
+        if (eanValue.length() == 0) {
             return null;
         }
 
@@ -232,11 +230,11 @@ public class AddBook extends SearchableFragment implements LoaderManager.LoaderC
         bookData.subTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
         bookData.imageUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
 
-        for (int i=0; i < authors.length;i++) {
+        for (int i = 0; i < authors.length; i++) {
             bookData.authors.add(authors[i]);
         }
 
-        for (int i=0; i < categories.length;i++) {
+        for (int i = 0; i < categories.length; i++) {
             bookData.categories.add(categories[i]);
         }
 
@@ -273,18 +271,18 @@ public class AddBook extends SearchableFragment implements LoaderManager.LoaderC
         if (!isAdded()) return;
 
         //catch isbn10 numbers
-        if(ean.length()==10 && !ean.startsWith("978")){
-            ean="978"+ean;
+        if (ean.length() == 10 && !ean.startsWith("978")) {
+            ean = "978" + ean;
         }
 
-        if(ean.length()<13){
+        if (ean.length() < 13) {
             return;
         }
 
         eanValue = ean;
 
         // Hides the keyboard if open
-        InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
         if (imm != null) {
             imm.hideSoftInputFromWindow(mEanTextField.getWindowToken(), 0);
@@ -311,7 +309,7 @@ public class AddBook extends SearchableFragment implements LoaderManager.LoaderC
         hideLoader();
 
         // Displays the message with a Snackbar
-        Snackbar.make(rootView,message,Snackbar.LENGTH_LONG).show();
+        Snackbar.make(rootView, message, Snackbar.LENGTH_LONG).show();
 
         if (mScannerFragment != null) {
             mScannerFragment.startScanning();

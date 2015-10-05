@@ -1,11 +1,9 @@
 package it.jaschke.alexandria;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +20,6 @@ import com.google.zxing.Result;
 import com.google.zxing.common.HybridBinarizer;
 
 import java.util.Hashtable;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -31,8 +28,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import it.jaschke.alexandria.CameraPreview.CameraPreview;
-import it.jaschke.alexandria.data.Book;
-import me.next.slidebottompanel.SlideBottomPanel;
 
 /**
  * Created by gabrielmarcos on 8/18/15.
@@ -47,19 +42,19 @@ public class ScannerFragment extends Fragment {
     private ScannerFragmentInterface mInterface;
 
     @Bind(R.id.camera_holder)
-    FrameLayout cameraHolder;
+    FrameLayout mCameraHolder;
 
-    private CameraPreview cameraPreview;
+    private CameraPreview mCameraPreview;
 
     // ZXing Barcode Reader
-    private MultiFormatReader multiFormatReader;
+    private MultiFormatReader mMultiFormatReader;
 
     // The Barcode reader process
-    private Timer scanTimer;
-    private int barcodeScanInterval = 1;
+    private Timer mScanTimer;
+    private int mBarcodeScanInterval = 1;
 
-    private SetupCameraTask setupCameraTask;
-    private StopCameraTask stopCameraTask;
+    private SetupCameraTask mSetupCameraTask;
+    private StopCameraTask mStopCameraTask;
 
     private boolean mScannerActivated = false;
 
@@ -82,7 +77,7 @@ public class ScannerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_scanner, container, false);
         ButterKnife.bind(this, rootView);
 
-        scanTimer = new Timer();
+        mScanTimer = new Timer();
 
         return rootView;
     }
@@ -127,7 +122,7 @@ public class ScannerFragment extends Fragment {
         vector.addElement(BarcodeFormat.EAN_13);
         hints.put(DecodeHintType.POSSIBLE_FORMATS, vector);
 
-        multiFormatReader.setHints(hints);
+        mMultiFormatReader.setHints(hints);
     }
 
     private class SetupCameraTask extends AsyncTask {
@@ -136,10 +131,10 @@ public class ScannerFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            if( stopCameraTask != null ) {
+            if( mStopCameraTask != null ) {
                 try {
-                    stopCameraTask.cancel(true);
-                    stopCameraTask = null;
+                    mStopCameraTask.cancel(true);
+                    mStopCameraTask = null;
                 } catch (Exception e) {}
             }
         }
@@ -148,8 +143,8 @@ public class ScannerFragment extends Fragment {
         protected Object doInBackground(Object[] objects) {
 
             // Setup the barcode reader
-            if( multiFormatReader == null ) {
-                multiFormatReader = new MultiFormatReader();
+            if( mMultiFormatReader == null ) {
+                mMultiFormatReader = new MultiFormatReader();
                 setDecodeProductMode();
             }
 
@@ -160,12 +155,12 @@ public class ScannerFragment extends Fragment {
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
 
-            cameraPreview.startCamera();
+            mCameraPreview.startCamera();
 
             // addView needs to run in the UI Thread (and onPostExecute runs in that thread)
-            // Make sure the cameraPreview has not been attached
-            if( cameraHolder.getChildCount() == 0 ) {
-                cameraHolder.addView(cameraPreview);
+            // Make sure the mCameraPreview has not been attached
+            if( mCameraHolder.getChildCount() == 0 ) {
+                mCameraHolder.addView(mCameraPreview);
             }
 
             startScanning();
@@ -179,10 +174,10 @@ public class ScannerFragment extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            if( setupCameraTask != null ) {
+            if( mSetupCameraTask != null ) {
                 try {
-                    setupCameraTask.cancel(true);
-                    setupCameraTask = null;
+                    mSetupCameraTask.cancel(true);
+                    mSetupCameraTask = null;
                 } catch (Exception e) {}
             }
         }
@@ -192,7 +187,7 @@ public class ScannerFragment extends Fragment {
         protected Object doInBackground(Object[] objects) {
 
             // Stop the barcode reader
-            multiFormatReader = null;
+            mMultiFormatReader = null;
 
             return null;
         }
@@ -202,15 +197,15 @@ public class ScannerFragment extends Fragment {
             super.onPostExecute(o);
 
             // Moved to the ui thread
-            cameraPreview.stop();
+            mCameraPreview.stop();
 
-            if( cameraPreview != null ) {
-                cameraHolder.removeView(cameraPreview);
+            if( mCameraPreview != null ) {
+                mCameraHolder.removeView(mCameraPreview);
             }
 
             // Cancel the barcode scanner task
-            if( scanTimer != null ){ scanTimer.cancel(); }
-            scanTimer = null;
+            if( mScanTimer != null ){ mScanTimer.cancel(); }
+            mScanTimer = null;
         }
     }
 
@@ -227,9 +222,9 @@ public class ScannerFragment extends Fragment {
             * on the scanner interval */
             if( mScannerActivated ) {
 
-                if (scanTimer != null) {
+                if (mScanTimer != null) {
                     try {
-                        scanTimer.schedule(new ReadBarcodeTask(), barcodeScanInterval);
+                        mScanTimer.schedule(new ReadBarcodeTask(), mBarcodeScanInterval);
                     } catch (Exception e) {
                         // Timer canceled?
                     }
@@ -242,10 +237,10 @@ public class ScannerFragment extends Fragment {
 
     public void readBarcode() {
 
-        if( cameraPreview == null ) { return; }
+        if( mCameraPreview == null ) { return; }
 
         Result rawResult;
-        PlanarYUVLuminanceSource source = cameraPreview.getLuminanceSource();
+        PlanarYUVLuminanceSource source = mCameraPreview.getLuminanceSource();
 
         if (source == null) {
             // No source (camera has not been initialized or there's an issue getting the luminance source)
@@ -256,14 +251,14 @@ public class ScannerFragment extends Fragment {
         BinaryBitmap scannerBitmap = new BinaryBitmap( new HybridBinarizer(source) );
 
         try {
-            rawResult = multiFormatReader.decodeWithState(scannerBitmap);
+            rawResult = mMultiFormatReader.decodeWithState(scannerBitmap);
             successfulScan( rawResult );
         } catch (NotFoundException e) {
             // Barcode Not Found
         } catch (NullPointerException e) {
             // the multiformatreader is off
         } catch (Exception e) {
-            multiFormatReader.reset();
+            mMultiFormatReader.reset();
         }
 
     }
@@ -272,7 +267,7 @@ public class ScannerFragment extends Fragment {
     public void successfulScan( final Result rawResult ) {
 
         try {
-            multiFormatReader.reset();
+            mMultiFormatReader.reset();
         } catch(Exception e){}
 
         /* Once a barcode was detected we stop the barcode scanner */
@@ -287,8 +282,6 @@ public class ScannerFragment extends Fragment {
                 if (mInterface != null) {
                     mInterface.onBarCodeFound(code);
                 }
-
-
             }
         });
 
@@ -310,8 +303,8 @@ public class ScannerFragment extends Fragment {
                 mScannerActivated = true;
 
                 // Start the barcode reader task
-                scanTimer = new Timer();
-                scanTimer.schedule(new ReadBarcodeTask(), barcodeScanInterval);
+                mScanTimer = new Timer();
+                mScanTimer.schedule(new ReadBarcodeTask(), mBarcodeScanInterval);
 
             }
         }, 1500);
@@ -330,33 +323,33 @@ public class ScannerFragment extends Fragment {
     public void startScanner() {
 
         // Usually, it's 0 for back-facing camera, 1 for front-facing camera.
-        if( cameraPreview == null ) {
+        if( mCameraPreview == null ) {
             int cameraIndex = 0;
-            cameraPreview = new CameraPreview(getActivity(), cameraIndex);
+            mCameraPreview = new CameraPreview(getActivity(), cameraIndex);
         }
 
-        setupCameraTask = new SetupCameraTask();
-        setupCameraTask.execute();
+        mSetupCameraTask = new SetupCameraTask();
+        mSetupCameraTask.execute();
     }
 
 
     public void stopScanner() {
 
-        if( setupCameraTask != null ) {
+        if( mSetupCameraTask != null ) {
             try {
-                setupCameraTask.cancel(true);
-                setupCameraTask = null;
+                mSetupCameraTask.cancel(true);
+                mSetupCameraTask = null;
             } catch(Exception e) {}
         }
 
-        if( stopCameraTask == null ) {
-            stopCameraTask = new StopCameraTask();
-            stopCameraTask.execute();
+        if( mStopCameraTask == null ) {
+            mStopCameraTask = new StopCameraTask();
+            mStopCameraTask.execute();
         }
 
         // Cancel the barcode scanner task
-        if( scanTimer != null ){ scanTimer.cancel(); }
-        scanTimer = null;
+        if( mScanTimer != null ){ mScanTimer.cancel(); }
+        mScanTimer = null;
 
     }
 

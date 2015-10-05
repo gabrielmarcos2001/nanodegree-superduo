@@ -45,6 +45,7 @@ dependencies {
     compile 'com.android.support:design:22.2.0' // Design compatibility library
     compile 'com.rengwuxian.materialedittext:library:2.1.4' // Very nice material edit text on every android version
     compile 'com.pnikosis:materialish-progress:1.5' // Material Progress bar
-    compile 'com.afollestad:material-dialogs:0.7.6.0' // Very nice looking material dialogs
+    compile 'com.afollestad:material-dialogs:0.7.6.0' // Very nice looking material dialogs'
+    compile 'com.android.support:cardview-v7:+'
 
 }

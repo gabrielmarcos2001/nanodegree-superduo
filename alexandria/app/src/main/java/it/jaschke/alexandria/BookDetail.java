@@ -20,6 +20,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,9 +33,10 @@ import butterknife.OnClick;
 import it.jaschke.alexandria.api.Callback;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
-import it.jaschke.alexandria.services.DownloadImage;
 
-
+/**
+ * Book Detail Fragment
+ */
 public class BookDetail extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     /**
@@ -84,6 +87,12 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     @Bind(R.id.fullBookCover)
     ImageView mFullBookCover;
 
+    @Bind(R.id.confirm_area)
+    View mDeleteConfirm;
+
+    @Bind(R.id.delete_button)
+    View mDeleteButton;
+
     private final int LOADER_ID = 10;
     private View rootView;
 
@@ -96,7 +105,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     /**
      * Empty Fragment Constructor
      */
-    public BookDetail(){
+    public BookDetail() {
 
     }
 
@@ -122,16 +131,16 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
             if (arguments.getBoolean(TABLET)) {
                 mToolbar.setVisibility(View.INVISIBLE);
-            }else {
-                ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(getString(R.string.title_book_detail));
+            } else {
+                ((AppCompatActivity) getActivity()).setSupportActionBar(mToolbar);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(getString(R.string.title_book_detail));
 
             }
         }
 
+        mDeleteConfirm.setVisibility(View.GONE);
         sDataObserver = new DataProviderObserver(new Handler());
-
 
         // We want to know if a book has been deleted
         Uri uri = AlexandriaContract.BookEntry.buildBookUri(Long.parseLong(ean)).buildUpon().appendPath("/delete").build();
@@ -216,7 +225,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         if (authors == null) {
             mAuthors.setText(getString(R.string.not_available));
-        }else {
+        } else {
             String[] authorsArr = authors.split(",");
 
             if (authorsArr.length == 0) {
@@ -230,14 +239,14 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         // Loads the Book Image URL
         String imgUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
 
-        if(Patterns.WEB_URL.matcher(imgUrl).matches()){
+        if (Patterns.WEB_URL.matcher(imgUrl).matches()) {
 
             // Loads the product image
             Picasso.with(getActivity())
                     .load(imgUrl)
                     .into(mFullBookCover);
 
-        }else {
+        } else {
 
             // Show default image
             mFullBookCover.setImageResource(R.drawable.book_default);
@@ -248,7 +257,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         if (categories == null) {
             mCategories.setText(getString(R.string.not_available));
-        }else {
+        } else {
             if (categories.isEmpty()) {
                 mCategories.setText(getString(R.string.not_available));
             } else {
@@ -276,15 +285,24 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     void onDeleteBookClicked() {
 
         // Show a confirmation modal first
+        showConfirmArea();
+    }
 
+    @OnClick(R.id.cancel)
+    void onDeleteCancelClicked() {
+        hideConfirmArea();
+    }
+
+    @OnClick(R.id.yes)
+    void onConfirmDeleteClicked() {
         Intent bookIntent = new Intent(getActivity(), BookService.class);
         bookIntent.putExtra(BookService.EAN, ean);
         bookIntent.setAction(BookService.DELETE_BOOK);
         getActivity().startService(bookIntent);
 
-        if(MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container)==null){
+        if (MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container) == null) {
             getActivity().getSupportFragmentManager().popBackStack();
-        }else {
+        } else {
             getActivity().onBackPressed();
         }
     }
@@ -297,8 +315,70 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     @Override
     public void onPause() {
         super.onDestroyView();
-        if(MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container)==null){
+        if (MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container) == null) {
             getActivity().getSupportFragmentManager().popBackStack();
         }
+    }
+
+    /**
+     * Shows the Delete Confirm Area
+     */
+    public void showConfirmArea() {
+
+        if (mDeleteConfirm.getVisibility() == View.VISIBLE) return;
+
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.show_from_right);
+        mDeleteConfirm.setVisibility(View.VISIBLE);
+        mDeleteConfirm.startAnimation(animation);
+
+        Animation hideAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.hide_to_left);
+        mDeleteButton.startAnimation(hideAnim);
+        hideAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mDeleteButton.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+    }
+
+    /**
+     * Hides the Delete Confirm Area
+     */
+    public void hideConfirmArea() {
+
+        if (mDeleteConfirm.getVisibility() == View.GONE) return;
+
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.show_from_left);
+        mDeleteButton.setVisibility(View.VISIBLE);
+        mDeleteButton.startAnimation(animation);
+
+        Animation hideAnim = AnimationUtils.loadAnimation(getActivity(), R.anim.hide_to_right);
+        mDeleteConfirm.startAnimation(hideAnim);
+        hideAnim.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mDeleteConfirm.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 }

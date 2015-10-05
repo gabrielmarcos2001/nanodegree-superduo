@@ -7,6 +7,16 @@ import it.jaschke.alexandria.data.Book;
  */
 public interface AlexandriaFragment {
 
+    /**
+     * Displays a Message in the Fragment - super useful
+     * for displaying errors
+     * @param message
+     */
     void showMessage(String message);
+
+    /**
+     * A New book was fetched
+     * @param book
+     */
     void newBookDataFetched(Book book);
 }

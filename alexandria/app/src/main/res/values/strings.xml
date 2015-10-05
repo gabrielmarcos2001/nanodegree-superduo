@@ -19,6 +19,8 @@
     <string name="ok_button">Next</string>
     <string name="close_scanner">CLOSE SCANNER</string>
     <string name="cancel_button">Cancel</string>
+    <string name="are_your_sure">Are you sure?</string>
+    <string name="yes">Yes</string>
     <string name="not_found">No Book found</string>
     <string name="search">Search</string>
     <string name="delete">Delete Book</string>

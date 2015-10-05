@@ -12,7 +12,7 @@ import it.jaschke.alexandria.data.Book;
 
 public class About extends Fragment implements AlexandriaFragment {
 
-    public About(){
+    public About() {
     }
 
     @Override
