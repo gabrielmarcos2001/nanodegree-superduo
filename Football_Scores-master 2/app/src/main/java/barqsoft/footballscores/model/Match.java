@@ -14,6 +14,8 @@ public class Match implements Parcelable {
     public int homeGoals;
     public int awayGoals;
     public String matchId;
+    public int homeId;
+    public int awayId;
 
     public Match() {
 
@@ -40,6 +42,8 @@ public class Match implements Parcelable {
         dest.writeInt(this.homeGoals);
         dest.writeInt(this.awayGoals);
         dest.writeString(this.matchId);
+        dest.writeInt(this.homeId);
+        dest.writeInt(this.awayId);
     }
 
     private void readFromParcel(Parcel in) {
@@ -49,6 +53,8 @@ public class Match implements Parcelable {
         this.homeGoals = in.readInt();
         this.awayGoals = in.readInt();
         this.matchId = in.readString();
+        this.homeId = in.readInt();
+        this.awayId = in.readInt();
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {

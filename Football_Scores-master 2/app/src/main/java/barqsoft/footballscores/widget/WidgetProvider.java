@@ -161,19 +161,22 @@ public class WidgetProvider extends AppWidgetProvider {
     private void updateViewWithMatch(RemoteViews widgetView, Match matchData, Context context) {
 
         if (matchData == null) {
+
             widgetView.setTextViewText(R.id.home_name, "");
             widgetView.setTextViewText(R.id.away_name, "");
             widgetView.setTextViewText(R.id.data_textview, "");
             widgetView.setTextViewText(R.id.score_textview, Utilies.getScores(0, 0));
-            widgetView.setImageViewResource(R.id.home_crest, Utilies.getTeamCrestByTeamName(""));
-            widgetView.setImageViewResource(R.id.away_crest, Utilies.getTeamCrestByTeamName(""));
+            widgetView.setImageViewResource(R.id.home_crest, Utilies.getTeamCrestByTeamId(0));
+            widgetView.setImageViewResource(R.id.away_crest, Utilies.getTeamCrestByTeamId(0));
+
         }else {
+
             widgetView.setTextViewText(R.id.home_name,matchData.homeName);
             widgetView.setTextViewText(R.id.away_name,matchData.awayName);
             widgetView.setTextViewText(R.id.data_textview,context.getString(R.string.today));
             widgetView.setTextViewText(R.id.score_textview, Utilies.getScores(matchData.homeGoals,matchData.awayGoals));
-            widgetView.setImageViewResource(R.id.home_crest, Utilies.getTeamCrestByTeamName(matchData.homeName));
-            widgetView.setImageViewResource(R.id.away_crest, Utilies.getTeamCrestByTeamName(matchData.awayName));
+            widgetView.setImageViewResource(R.id.home_crest, Utilies.getTeamCrestByTeamId(matchData.homeId));
+            widgetView.setImageViewResource(R.id.away_crest, Utilies.getTeamCrestByTeamId(matchData.awayId));
         }
     }
 

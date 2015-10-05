@@ -30,6 +30,8 @@ public class ScoresDBHelper extends SQLiteOpenHelper {
                 + ScoresTable.TIME_COL + " INTEGER NOT NULL,"
                 + ScoresTable.HOME_COL + " TEXT NOT NULL,"
                 + ScoresTable.AWAY_COL + " TEXT NOT NULL,"
+                + ScoresTable.HOME_ID + " INTEGER NOT NULL,"
+                + ScoresTable.AWAY_ID + " INTEGER NOT NULL,"
                 + ScoresTable.LEAGUE_COL + " INTEGER NOT NULL,"
                 + ScoresTable.HOME_GOALS_COL + " TEXT NOT NULL,"
                 + ScoresTable.AWAY_GOALS_COL + " TEXT NOT NULL,"

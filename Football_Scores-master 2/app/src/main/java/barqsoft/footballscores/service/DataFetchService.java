@@ -1,5 +1,6 @@
 package barqsoft.footballscores.service;
 
+import android.app.Activity;
 import android.app.IntentService;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
@@ -7,6 +8,9 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.Message;
+import android.os.Messenger;
 import android.os.Parcelable;
 import android.util.Log;
 
@@ -44,8 +48,17 @@ public class DataFetchService extends IntentService {
         super("DataFetchService");
     }
 
+    private Messenger mMessenger;
+
     @Override
     protected void onHandleIntent(Intent intent) {
+
+        // Gets a reference to the messenger for sending error
+        // messages
+        Bundle extras = intent.getExtras();
+        if (extras != null) {
+            mMessenger = (Messenger) extras.get("messenger");
+        }
 
         // Gets the data for the next 2 days
         getData("n2");
@@ -108,7 +121,8 @@ public class DataFetchService extends IntentService {
             jsonData = buffer.toString();
 
         } catch (Exception e) {
-            Log.e(LOG_TAG, "Exception here" + e.getMessage());
+            sendErrorMessage(getString(R.string.default_error));
+
         } finally {
 
             if (httpConnection != null) {
@@ -138,14 +152,11 @@ public class DataFetchService extends IntentService {
                 processJsonData(jsonData, getApplicationContext(), true);
 
             } else {
-
-                //Could not Connect
-                Log.d(LOG_TAG, "Could not connect to server.");
+                sendErrorMessage(getString(R.string.default_error));
             }
 
         } catch (Exception e) {
-
-            Log.e(LOG_TAG, e.getMessage());
+            sendErrorMessage(getString(R.string.default_error));
         }
     }
 
@@ -157,22 +168,9 @@ public class DataFetchService extends IntentService {
      */
     private void processJsonData(String jsonData, Context mContext, boolean isReal) {
 
-        // This set of league codes is for the 2015/2016 season. In fall of 2016, they will need to
-        // be updated. Feel free to use the codes
-        final String BUNDESLIGA1 = "394";
-        final String BUNDESLIGA2 = "395";
-        final String LIGUE1 = "396";
-        final String LIGUE2 = "397";
-        final String PREMIER_LEAGUE = "398";
-        final String PRIMERA_DIVISION = "399";
-        final String SEGUNDA_DIVISION = "400";
-        final String SERIE_A = "401";
-        final String PRIMERA_LIGA = "402";
-        final String Bundesliga3 = "403";
-        final String EREDIVISIE = "404";
-
         final String SEASON_LINK = "http://api.football-data.org/alpha/soccerseasons/";
         final String MATCH_LINK = "http://api.football-data.org/alpha/fixtures/";
+        final String TEAM_LINK = "http://api.football-data.org/alpha/teams/";
         final String FIXTURES = "fixtures";
         final String LINKS = "_links";
         final String SOCCER_SEASON = "soccerseason";
@@ -184,9 +182,14 @@ public class DataFetchService extends IntentService {
         final String HOME_GOALS = "goalsHomeTeam";
         final String AWAY_GOALS = "goalsAwayTeam";
         final String MATCH_DAY = "matchday";
+        final String AWAY_TEAM_REF = "awayTeam";
+        final String HOME_TEAM_REF = "homeTeam";
+
 
         //Match data
         String leagueId;
+        String homeId;
+        String awayId;
         String date;
         String time;
         String homeName;
@@ -218,7 +221,8 @@ public class DataFetchService extends IntentService {
             JSONArray matches = jsonObject.getJSONArray(FIXTURES);
 
             //ContentValues to be inserted
-            Vector<ContentValues> values = new Vector<ContentValues>(matches.length());
+            Vector<ContentValues> values = new Vector<>(matches.length());
+
             for (int i = 0; i < matches.length(); i++) {
 
                 JSONObject matchData = matches.getJSONObject(i);
@@ -227,15 +231,25 @@ public class DataFetchService extends IntentService {
 
                 leagueId = leagueId.replace(SEASON_LINK, "");
 
+                homeId = matchData.getJSONObject(LINKS).getJSONObject(HOME_TEAM_REF).
+                        getString("href");
+
+                homeId = homeId.replace(TEAM_LINK, "");
+
+                awayId = matchData.getJSONObject(LINKS).getJSONObject(AWAY_TEAM_REF).
+                        getString("href");
+
+                awayId = awayId.replace(TEAM_LINK, "");
+
                 //This if statement controls which leagues we're interested in the data from.
                 //add leagues here in order to have them be added to the DB.
                 // If you are finding no data in the app, check that this contains all the leagues.
                 // If it doesn't, that can cause an empty DB, bypassing the dummy data routine.
-                if (leagueId.equals(PREMIER_LEAGUE) ||
-                        leagueId.equals(SERIE_A) ||
-                        leagueId.equals(BUNDESLIGA1) ||
-                        leagueId.equals(BUNDESLIGA2) ||
-                        leagueId.equals(PRIMERA_DIVISION)) {
+                if (leagueId.equals(AppConfig.PREMIER_LEAGUE) ||
+                        leagueId.equals(AppConfig.SERIE_A) ||
+                        leagueId.equals(AppConfig.BUNDESLIGA1) ||
+                        leagueId.equals(AppConfig.BUNDESLIGA2) ||
+                        leagueId.equals(AppConfig.PRIMERA_DIVISION)) {
 
                     matchId = matchData.getJSONObject(LINKS).getJSONObject(SELF).
                             getString("href");
@@ -286,9 +300,11 @@ public class DataFetchService extends IntentService {
                     match_values.put(DatabaseContract.ScoresTable.TIME_COL, time);
                     match_values.put(DatabaseContract.ScoresTable.HOME_COL, homeName);
                     match_values.put(DatabaseContract.ScoresTable.AWAY_COL, awayName);
+                    match_values.put(DatabaseContract.ScoresTable.HOME_ID, homeId);
+                    match_values.put(DatabaseContract.ScoresTable.AWAY_ID, awayId);
+                    match_values.put(DatabaseContract.ScoresTable.LEAGUE_COL, leagueId);
                     match_values.put(DatabaseContract.ScoresTable.HOME_GOALS_COL, homeGoals);
                     match_values.put(DatabaseContract.ScoresTable.AWAY_GOALS_COL, awayGoals);
-                    match_values.put(DatabaseContract.ScoresTable.LEAGUE_COL, leagueId);
                     match_values.put(DatabaseContract.ScoresTable.MATCH_DAY, matchDay);
 
                     // We keep track of today scores for
@@ -300,6 +316,8 @@ public class DataFetchService extends IntentService {
                         match.date = date;
                         match.homeGoals = Integer.valueOf(homeGoals);
                         match.awayGoals = Integer.valueOf(awayGoals);
+                        match.homeId = Integer.valueOf(homeId);
+                        match.awayId = Integer.valueOf(awayId);
                         matchList.add(match);
                     }
 
@@ -330,6 +348,27 @@ public class DataFetchService extends IntentService {
             Log.e(LOG_TAG, e.getMessage());
         }
 
+    }
+
+    /**
+     * Sends an error message by using a messenger
+     * @param error
+     */
+    private void sendErrorMessage(String error) {
+
+        if (mMessenger != null) {
+
+            Message msg = Message.obtain();
+            msg.arg1 = Activity.RESULT_CANCELED;
+            Bundle bundle = new Bundle();
+            bundle.putString("errorMessage",error);
+            msg.setData(bundle);
+            try {
+                mMessenger.send(msg);
+            } catch (android.os.RemoteException e1) {
+
+            }
+        }
     }
 }
 

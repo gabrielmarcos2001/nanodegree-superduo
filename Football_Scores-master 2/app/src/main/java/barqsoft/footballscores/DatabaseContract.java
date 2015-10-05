@@ -17,11 +17,13 @@ public class DatabaseContract {
     public static final class ScoresTable implements BaseColumns {
 
         //Table data
-        public static final String LEAGUE_COL = "league";
         public static final String DATE_COL = "date";
         public static final String TIME_COL = "time";
         public static final String HOME_COL = "home";
         public static final String AWAY_COL = "away";
+        public static final String HOME_ID = "home_id";
+        public static final String AWAY_ID = "away_id";
+        public static final String LEAGUE_COL = "league";
         public static final String HOME_GOALS_COL = "home_goals";
         public static final String AWAY_GOALS_COL = "away_goals";
         public static final String MATCH_ID = "match_id";
@@ -30,6 +32,7 @@ public class DatabaseContract {
         //Types
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_SCORES;
+
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_SCORES;
 

@@ -1,94 +1,101 @@
 package barqsoft.footballscores;
 
+import android.content.Context;
+
 /**
  * Created by yehya khaled on 3/3/2015.
  */
 public class Utilies {
 
-    public static final int SERIE_A = 401;
-    public static final int PREMIER_LEAGUE = 398;
-    public static final int CHAMPIONS_LEAGUE = 362;
-    public static final int PRIMERA_DIVISION = 399;
-    public static final int BUNDESLIGA = 394;
-    public static final int BUNDESLIGA2 = 395;
-
     /**
      * Gets the League name from its id
-     * @param leagueNum
+     * @param context
+     * @param leagueId
      * @return
      */
-    public static String getLeague(int leagueNum) {
-        switch (leagueNum) {
-            case SERIE_A:
-                return "Seria A";
-            case PREMIER_LEAGUE:
-                return "Premier League";
-            case CHAMPIONS_LEAGUE:
-                return "UEFA Champions League";
-            case PRIMERA_DIVISION:
-                return "Primera Division";
-            case BUNDESLIGA:
-                return "Bundesliga";
-            case BUNDESLIGA2:
-                return "Bundesliga";
+    public static String getLeague(Context context, int leagueId) {
+
+        String leagueString = String.valueOf(leagueId);
+
+        switch (leagueString) {
+            case AppConfig.SERIE_A:
+                return context.getString(R.string.league_serie_a);
+            case AppConfig.PREMIER_LEAGUE:
+                return context.getString(R.string.league_premiere_league);
+            case AppConfig.PRIMERA_DIVISION:
+                return context.getString(R.string.league_primera_division);
+            case AppConfig.BUNDESLIGA1:
+                return context.getString(R.string.league_bundesliga);
+            case AppConfig.BUNDESLIGA2:
+                return context.getString(R.string.league_bundesliga);
             default:
-                return "Not known League Please report";
+                return context.getString(R.string.league_unknown);
         }
     }
 
-    public static String getMatchDay(int match_day, int league_num) {
-        if (league_num == CHAMPIONS_LEAGUE) {
-            if (match_day <= 6) {
-                return "Group Stages, Matchday : 6";
-            } else if (match_day == 7 || match_day == 8) {
-                return "First Knockout round";
-            } else if (match_day == 9 || match_day == 10) {
-                return "QuarterFinal";
-            } else if (match_day == 11 || match_day == 12) {
-                return "SemiFinal";
-            } else {
-                return "Final";
-            }
-        } else {
-            return "Matchday : " + String.valueOf(match_day);
-        }
+    /**
+     * Returns the Match day formatted text
+     * @param context
+     * @param match_day
+     * @return
+     */
+    public static String getMatchDay(Context context, int match_day) {
+        return context.getString(R.string.matchDay) + " : " + String.valueOf(match_day);
     }
 
-    public static String getScores(int home_goals, int awaygoals) {
-        if (home_goals < 0 || awaygoals < 0) {
+    /**
+     * Returns the scores formatted text
+     * @param homeGoals
+     * @param awayGoals
+     * @return
+     */
+    public static String getScores(int homeGoals, int awayGoals) {
+        if (homeGoals < 0 || awayGoals < 0) {
             return " - ";
         } else {
-            return String.valueOf(home_goals) + " - " + String.valueOf(awaygoals);
+            return String.valueOf(homeGoals) + " - " + String.valueOf(awayGoals);
         }
     }
 
-    public static int getTeamCrestByTeamName(String teamname) {
+    /**
+     * Returns the team drawable id based on the team id
+     * @param teamId
+     * @return
+     */
+    public static int getTeamCrestByTeamId(int teamId) {
 
-        if (teamname == null) {
-            return R.drawable.ic_launcher;
-        }
+        switch (teamId) {
 
-        switch (teamname) {
-            case "Arsenal London FC":
+            case AppConfig.TEAM_ARSENAL_ID:
                 return R.drawable.arsenal;
-            case "Manchester United FC":
+
+            case AppConfig.TEAM_MANCHESTER_UNITED_ID:
                 return R.drawable.manchester_united;
-            case "Swansea City":
+
+            case AppConfig.TEAM_SWANSEA_ID:
                 return R.drawable.swansea_city_afc;
-            case "Leicester City":
+
+            case AppConfig.TEAM_LEICSESTER_ID:
                 return R.drawable.leicester_city_fc_hd_logo;
-            case "Everton FC":
+
+            case AppConfig.TEAM_EVERTON_ID:
                 return R.drawable.everton_fc_logo1;
-            case "West Ham United FC":
+
+            case AppConfig.TEAM_WEST_HAM_ID:
                 return R.drawable.west_ham;
-            case "Tottenham Hotspur FC":
+
+            case AppConfig.TEAM_TOTTEMHAM_ID:
                 return R.drawable.tottenham_hotspur;
-            case "West Bromwich Albion":
+
+            case AppConfig.TEAM_WEST_BROMWICH_ID:
                 return R.drawable.west_bromwich_albion_hd_logo;
-            case "Sunderland AFC":
+
+            case AppConfig.TEAM_SUNDERLAND_ID:
                 return R.drawable.sunderland;
-            case "Stoke City FC":
+
+            case AppConfig.TEAM_STOKE_ID:
                 return R.drawable.stoke_city;
+
             default:
                 return R.drawable.ic_launcher;
         }
