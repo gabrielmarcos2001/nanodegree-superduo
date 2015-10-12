@@ -41,7 +41,8 @@
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:src="@drawable/ic_launcher"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:contentDescription="@string/empty_image"/>
 
         <TextView
             android:layout_width="match_parent"

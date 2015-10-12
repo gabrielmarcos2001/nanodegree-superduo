@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <LinearLayout
             android:id="@+id/data_container"
             android:orientation="horizontal"
@@ -32,6 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:contentDescription="@string/home_crest"
                     />
 
                 <TextView
@@ -90,6 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:contentDescription="@string/away_crest"
                     />
 
                 <TextView
@@ -119,14 +122,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="PREV"/>
+            android:text="@string/prev"
+            android:contentDescription="@string/description_prev"/>
 
         <Button
             android:id="@+id/next"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="NEXT"/>
+            android:text="@string/next"
+            android:contentDescription="@string/description_next"/>
 
         </LinearLayout>
 

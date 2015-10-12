@@ -25,6 +25,12 @@
     <string name="default_error">Error getting Scores information</string>
     <string name="title_activity_about">AboutActivity</string>
     <string name="matchDay">Match Day</string>
+    <string name="prev">PREV</string>
+    <string name="next">NEXT</string>
+
+    <string name="description_prev">Previous</string>
+    <string name="description_next">Next</string>
+    <string name="empty_image">Empty Image</string>
 
     <string name="about_text">
         This Application get Football Matches Score for the Premier League,Seria A,Bundesliga,Primera Division
@@ -67,4 +73,9 @@
     <string name="league_erediviste">Erediviste</string>
     <string name="league_primera_liga">Primera Liga</string>
 
+    <string name="away_crest">Away Crest</string>
+    <string name="home_crest">Home Crest</string>
+
+    <string name="intro_step_one">If you are a Football fan, this is the app for you! Easily keep track of the scores from you favorites leagues. Never again miss a score!</string>
+    <string name="intro_step_two">You don't even have to open the app. Add our beautiful widget to your home screen for getting the scores of the current day</string>
 </resources>

@@ -37,7 +37,6 @@
             android:text="@string/start"
             android:background="@drawable/stroke_light"
             android:textColor="@color/fb_yellow_1"
-            fontPath="fonts/AzoSansMedium.otf"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="20dp"
             android:layout_alignParentBottom="true"/>
