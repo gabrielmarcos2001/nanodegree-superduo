@@ -29,7 +29,7 @@ import it.jaschke.alexandria.services.BookService;
 import it.jaschke.alexandria.views.BookDataPanel;
 import it.jaschke.alexandria.views.SearchableEditText;
 
-public class AddBook extends SearchableFragment implements LoaderManager.LoaderCallbacks<Cursor>, SearchableEditText.SearchableEditTextActions, AlexandriaFragment, ScannerFragment.ScannerFragmentInterface {
+public class AddBook extends SearchableFragment implements LoaderManager.LoaderCallbacks<Cursor>, SearchableEditText.SearchableEditTextActions, ScannerFragment.ScannerFragmentInterface {
 
     private static final String TAG = "INTENT_TO_SCAN_ACTIVITY";
 

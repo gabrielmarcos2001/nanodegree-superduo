@@ -21,4 +21,9 @@
          https://developer.android.com/design/patterns/navigation-drawer.html -->
     <dimen name="navigation_drawer_width">240dp</dimen>
 
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
+
+    <dimen name="intro_image_height">300dp</dimen>
+
 </resources>

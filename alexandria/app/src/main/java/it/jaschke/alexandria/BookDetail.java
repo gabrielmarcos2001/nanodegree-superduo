@@ -1,11 +1,8 @@
 package it.jaschke.alexandria;
 
 import android.content.Intent;
-import android.database.ContentObserver;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -30,7 +27,6 @@ import com.squareup.picasso.Picasso;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import it.jaschke.alexandria.api.Callback;
 import it.jaschke.alexandria.data.AlexandriaContract;
 import it.jaschke.alexandria.services.BookService;
 
@@ -38,30 +34,6 @@ import it.jaschke.alexandria.services.BookService;
  * Book Detail Fragment
  */
 public class BookDetail extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
-
-    /**
-     * We want to observe for content updates in case the book gets deleted
-     */
-    class DataProviderObserver extends ContentObserver {
-
-        DataProviderObserver(Handler h) {
-            super(h);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            super.onChange(selfChange);
-
-            if (isAdded()) {
-                if (MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container) == null) {
-                    getActivity().getSupportFragmentManager().popBackStack();
-                } else {
-                    getActivity().onBackPressed();
-                }
-            }
-
-        }
-    }
 
     public static final String EAN_KEY = "EAN";
     public static final String TABLET = "TABLET";
@@ -94,13 +66,12 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     View mDeleteButton;
 
     private final int LOADER_ID = 10;
-    private View rootView;
+    private View mRootView;
 
-    private String ean;
-    private String bookTitle;
-    private static DataProviderObserver sDataObserver;
+    private String mEan;
+    private String mBookTitle;
 
-    private ShareActionProvider shareActionProvider;
+    private ShareActionProvider mShareActionProvider;
 
     /**
      * Empty Fragment Constructor
@@ -121,12 +92,12 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         Bundle arguments = getArguments();
 
-        rootView = inflater.inflate(R.layout.fragment_full_book, container, false);
+        mRootView = inflater.inflate(R.layout.fragment_full_book, container, false);
 
-        ButterKnife.bind(this, rootView);
+        ButterKnife.bind(this, mRootView);
 
         if (arguments != null) {
-            ean = arguments.getString(BookDetail.EAN_KEY);
+            mEan = arguments.getString(BookDetail.EAN_KEY);
             getLoaderManager().restartLoader(LOADER_ID, null, this);
 
             if (arguments.getBoolean(TABLET)) {
@@ -140,24 +111,9 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         }
 
         mDeleteConfirm.setVisibility(View.GONE);
-        sDataObserver = new DataProviderObserver(new Handler());
-
-        // We want to know if a book has been deleted
-        Uri uri = AlexandriaContract.BookEntry.buildBookUri(Long.parseLong(ean)).buildUpon().appendPath("/delete").build();
-        getActivity().getContentResolver().registerContentObserver(uri, true, sDataObserver);
-
         setHasOptionsMenu(true);
 
-        return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-
-        if (sDataObserver != null) {
-            getActivity().getContentResolver().unregisterContentObserver(sDataObserver);
-        }
+        return mRootView;
     }
 
     @Override
@@ -165,7 +121,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
         inflater.inflate(R.menu.book_detail, menu);
 
         MenuItem menuItem = menu.findItem(R.id.action_share);
-        shareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(menuItem);
 
         updateShareIntent();
     }
@@ -175,11 +131,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                if (MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container) == null) {
-                    getActivity().getSupportFragmentManager().popBackStack();
-                } else {
-                    getActivity().onBackPressed();
-                }
+                getActivity().onBackPressed();
                 return true;
         }
 
@@ -190,7 +142,7 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new CursorLoader(
                 getActivity(),
-                AlexandriaContract.BookEntry.buildFullBookUri(Long.parseLong(ean)),
+                AlexandriaContract.BookEntry.buildFullBookUri(Long.parseLong(mEan)),
                 null,
                 null,
                 null,
@@ -205,8 +157,8 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
             return;
         }
 
-        bookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
-        mFullBookTitle.setText(bookTitle);
+        mBookTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
+        mFullBookTitle.setText(mBookTitle);
 
         // Updates the Share intent with the book title
         updateShareIntent();
@@ -272,12 +224,12 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
      */
     private void updateShareIntent() {
 
-        if (shareActionProvider != null && bookTitle != null) {
+        if (mShareActionProvider != null && mBookTitle != null) {
             Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
             shareIntent.setType("text/plain");
-            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + bookTitle);
-            shareActionProvider.setShareIntent(shareIntent);
+            shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_text) + mBookTitle);
+            mShareActionProvider.setShareIntent(shareIntent);
         }
     }
 
@@ -295,13 +247,17 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
 
     @OnClick(R.id.yes)
     void onConfirmDeleteClicked() {
+
         Intent bookIntent = new Intent(getActivity(), BookService.class);
-        bookIntent.putExtra(BookService.EAN, ean);
+        bookIntent.putExtra(BookService.EAN, mEan);
         bookIntent.setAction(BookService.DELETE_BOOK);
         getActivity().startService(bookIntent);
 
-        if (MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container) == null) {
+        if (MainActivity.IS_TABLET && mRootView.findViewById(R.id.right_container) == null) {
+
+            // Removes the Fragment
             getActivity().getSupportFragmentManager().popBackStack();
+
         } else {
             getActivity().onBackPressed();
         }
@@ -310,14 +266,6 @@ public class BookDetail extends Fragment implements LoaderManager.LoaderCallback
     @Override
     public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
 
-    }
-
-    @Override
-    public void onPause() {
-        super.onDestroyView();
-        if (MainActivity.IS_TABLET && rootView.findViewById(R.id.right_container) == null) {
-            getActivity().getSupportFragmentManager().popBackStack();
-        }
     }
 
     /**

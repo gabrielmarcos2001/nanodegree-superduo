@@ -37,8 +37,14 @@
     <string name="close_uppercase">CLOSE</string>
     <string name="add_to_list_uppercase">ADD TO LIST</string>
     <string name="delete_book_uppercase">DELETE BOOK</string>
+    <string name="start">Start</string>
+    <string name="or">Or</string>
+    <string name="add_books_title">EASILY ADD BOOKS TO YOUR LIBRARY</string>
 
-<!-- TODO: Remove or change this placeholder text -->
+    <string name="intro_step_one">Welcome to Alexandria! The best way to have a quick list of your favorite books right at your fingertips!</string>
+    <string name="intro_step_two">Add a book by typing the ISBN number, or use our built-in scanner for a better experience!</string>
+    <string name="empty_list">No Books added to your list.</string>
+
     <string name="about_text">This application gets book information from a Google API. All titles, cover images, and author information come from there.
     The original version of this app was built by Sascha Jaschke, and a modified version is given to students in the Udacity Android Nanodegree program. </string>
 </resources>

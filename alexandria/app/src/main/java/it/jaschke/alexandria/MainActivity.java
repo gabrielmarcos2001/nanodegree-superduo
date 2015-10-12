@@ -1,14 +1,10 @@
 package it.jaschke.alexandria;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -29,13 +25,19 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     private Toolbar mToolbar;
 
     /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
+     * Used to store the last screen mTitle. For use in {@link #restoreActionBar()}.
      */
-    private CharSequence title;
+    private CharSequence mTitle;
 
+    /**
+     * Tracks if the current device is a tablet
+     */
     public static boolean IS_TABLET = false;
 
-    private static int mCurrentPosition = -1;
+    /**
+     * Keeps track of the current selected position
+     */
+    private int mCurrentPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +60,13 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
         navigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
 
-        title = getTitle();
+        mTitle = getTitle();
 
         // Set up the drawer.
         navigationDrawerFragment.setUp(R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout), mToolbar);
+
+        mCurrentPosition = -1;
 
     }
 
@@ -97,19 +101,20 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     }
 
     public void setTitle(int titleId) {
-        title = getString(titleId);
+        mTitle = getString(titleId);
     }
 
     public void restoreActionBar() {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(title);
+        actionBar.setTitle(mTitle);
     }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+
         if (!navigationDrawerFragment.isDrawerOpen()) {
             // Only show items in the action bar relevant to this screen
             // if the drawer is not showing. Otherwise, let the drawer
@@ -118,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
             restoreActionBar();
             return true;
         }
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -139,6 +145,9 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
     }
 
     @Override
+    /**
+     * A Book was selected from the list of books
+     */
     public void onItemSelected(String ean) {
 
         Bundle args = new Bundle();
@@ -153,11 +162,10 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.right_container, fragment)
-                    .addToBackStack("Book Detail")
+                    .addToBackStack("BookDetail")
                     .commit();
 
         } else {
-
 
             Intent i = new Intent(this, BookDetailActivity.class);
             i.putExtras(args);
@@ -169,19 +177,14 @@ public class MainActivity extends AppCompatActivity implements NavigationDrawerF
 
     }
 
-    public void goBack(View view) {
-        getSupportFragmentManager().popBackStack();
-    }
-
+    /**
+     * Checks if the device is a Tablet
+     * @return
+     */
     private boolean isTablet() {
         return (getApplicationContext().getResources().getConfiguration().screenLayout
                 & Configuration.SCREENLAYOUT_SIZE_MASK)
                 >= Configuration.SCREENLAYOUT_SIZE_LARGE;
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
 }

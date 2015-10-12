@@ -26,7 +26,7 @@ public abstract class SearchableFragment extends Fragment {
 
     public abstract void newBookDataFetched(Book book);
 
-    private class MessageReciever extends BroadcastReceiver {
+    private class MessageReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
 
@@ -42,7 +42,7 @@ public abstract class SearchableFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mMessageReceiver = new MessageReciever();
+        mMessageReceiver = new MessageReceiver();
         IntentFilter filter = new IntentFilter(MESSAGE_EVENT);
         LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver, filter);
 

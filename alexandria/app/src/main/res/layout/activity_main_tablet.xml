@@ -42,6 +42,7 @@
             android:layout_gravity="start"
             android:name="it.jaschke.alexandria.NavigationDrawerFragment"
             tools:layout="@layout/fragment_navigation_drawer" />
+
     </android.support.v4.widget.DrawerLayout>
 
 </LinearLayout>

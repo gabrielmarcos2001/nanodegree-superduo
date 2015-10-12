@@ -1,0 +1,30 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/intro_image_height"
+        android:src="@drawable/intro_step_one"
+        android:layout_centerInParent="true"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:alpha="0.25"
+        android:background="@color/fb_yellow_1"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_below="@+id/image"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/fb_yellow_1"
+        android:layout_below="@+id/image"
+        android:layout_margin="20dp"
+        android:text="If you are a Football fan, this is the app for you! Easily keep track of the scores from you favorites leagues. Never again miss a score!"/>
+</RelativeLayout>

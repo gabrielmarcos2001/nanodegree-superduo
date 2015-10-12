@@ -122,4 +122,10 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
             ((MainActivity) getActivity()).updateScores();
         }
     }
+
+    public void onError() {
+        if (isAdded()) {
+            mSwipeLayout.setRefreshing(false);
+        }
+    }
 }

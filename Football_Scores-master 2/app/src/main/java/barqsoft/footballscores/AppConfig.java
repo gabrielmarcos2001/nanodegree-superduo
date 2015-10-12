@@ -18,7 +18,7 @@ public class AppConfig {
     public static final String SEGUNDA_DIVISION = "400";
     public static final String SERIE_A = "401";
     public static final String PRIMERA_LIGA = "402";
-    public static final String Bundesliga3 = "403";
+    public static final String BUNDESLIGA3 = "403";
     public static final String EREDIVISIE = "404";
 
     // Team Ids
@@ -32,6 +32,5 @@ public class AppConfig {
     public static final int TEAM_WEST_BROMWICH_ID = 74;
     public static final int TEAM_SUNDERLAND_ID = 71;
     public static final int TEAM_STOKE_ID = 70;
-
 
 }

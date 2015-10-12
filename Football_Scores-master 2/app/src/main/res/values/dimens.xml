@@ -14,4 +14,9 @@
     <dimen name="widget_min_height">180dp</dimen>
     <dimen name="widget_min_width">320dp</dimen>
     <dimen name="widget_padding">10dp</dimen>
+
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_5">5dp</dimen>
+
+    <dimen name="intro_image_height">300dp</dimen>
 </resources>

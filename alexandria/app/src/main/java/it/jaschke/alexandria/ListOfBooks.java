@@ -33,7 +33,7 @@ import it.jaschke.alexandria.data.Book;
 import it.jaschke.alexandria.views.SearchableEditText;
 
 
-public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, AlexandriaFragment {
+public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     class DataProviderObserver extends ContentObserver {
 
@@ -61,6 +61,9 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
     @Bind(R.id.searchText)
     EditText mSearchText;
 
+    @Bind(R.id.empty_list)
+    View mEmptyView;
+
     private static DataProviderObserver sDataObserver;
 
     private final int LOADER_ID = 10;
@@ -87,8 +90,13 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
 
 
         mBookListAdapter = new BookListAdapter(getActivity(), cursor, 0);
+        View rootView;
 
-        View rootView = inflater.inflate(R.layout.fragment_list_of_books, container, false);
+        if (MainActivity.IS_TABLET) {
+            rootView = inflater.inflate(R.layout.fragment_list_of_books_tablet, container, false);
+        }else {
+            rootView = inflater.inflate(R.layout.fragment_list_of_books, container, false);
+        }
 
         ButterKnife.bind(this, rootView);
 
@@ -122,8 +130,8 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
             }
         });
 
-        mBookList = (ListView) rootView.findViewById(R.id.listOfBooks);
         mBookList.setAdapter(mBookListAdapter);
+        mBookList.setEmptyView(mEmptyView);
 
         mBookList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -207,13 +215,4 @@ public class ListOfBooks extends Fragment implements LoaderManager.LoaderCallbac
         activity.setTitle(R.string.books);
     }
 
-    @Override
-    public void showMessage(String message) {
-        Snackbar.make(getView(), message, Snackbar.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void newBookDataFetched(Book book) {
-
-    }
 }

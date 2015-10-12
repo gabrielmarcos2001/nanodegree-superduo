@@ -2,8 +2,6 @@ package barqsoft.footballscores.service;
 
 import android.app.Activity;
 import android.app.IntentService;
-import android.appwidget.AppWidgetManager;
-import android.appwidget.AppWidgetProvider;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -34,6 +32,7 @@ import java.util.Vector;
 import barqsoft.footballscores.AppConfig;
 import barqsoft.footballscores.DatabaseContract;
 import barqsoft.footballscores.R;
+import barqsoft.footballscores.Utilies;
 import barqsoft.footballscores.model.Match;
 import barqsoft.footballscores.widget.WidgetProvider;
 
@@ -245,11 +244,7 @@ public class DataFetchService extends IntentService {
                 //add leagues here in order to have them be added to the DB.
                 // If you are finding no data in the app, check that this contains all the leagues.
                 // If it doesn't, that can cause an empty DB, bypassing the dummy data routine.
-                if (leagueId.equals(AppConfig.PREMIER_LEAGUE) ||
-                        leagueId.equals(AppConfig.SERIE_A) ||
-                        leagueId.equals(AppConfig.BUNDESLIGA1) ||
-                        leagueId.equals(AppConfig.BUNDESLIGA2) ||
-                        leagueId.equals(AppConfig.PRIMERA_DIVISION)) {
+                if (Utilies.checkProcessLeague(leagueId)) {
 
                     matchId = matchData.getJSONObject(LINKS).getJSONObject(SELF).
                             getString("href");

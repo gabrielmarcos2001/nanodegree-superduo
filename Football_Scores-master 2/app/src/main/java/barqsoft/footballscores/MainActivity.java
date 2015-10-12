@@ -43,6 +43,12 @@ public class MainActivity extends AppCompatActivity {
                 if (error != null) {
                     Snackbar.make(findViewById(android.R.id.content), error, Snackbar.LENGTH_LONG).show();
                 }
+
+                // Tells the Fragment Pager about the error so each individual
+                // fragment can handle it
+                if (mPagerFragment != null) {
+                    mPagerFragment.onError();
+                }
             }
             return true;
         }

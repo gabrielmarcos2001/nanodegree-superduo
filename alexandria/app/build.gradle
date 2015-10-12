@@ -39,7 +39,6 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'me.dm7.barcodescanner:zbar:1.8.2'
     compile 'com.android.support:appcompat-v7:22.2.0'
-    compile 'com.github.kingideayou:SlideBottomPanel:1.0.2' // very awesome slide from bottom library
     compile 'com.squareup.picasso:picasso:2.5.2' // Used for image loading / caching
     compile 'com.jakewharton:butterknife:7.0.1' // View Injection library
     compile 'com.android.support:design:22.2.0' // Design compatibility library

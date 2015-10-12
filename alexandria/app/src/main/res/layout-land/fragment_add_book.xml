@@ -15,112 +15,111 @@
         android:alpha="0.05"/>
 
 
-            <LinearLayout
-                android:id="@+id/search_container"
+    <LinearLayout
+        android:id="@+id/search_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:orientation="vertical">
+
+        <!-- Awesome View title -->
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_books_title"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="40dp"
+            android:gravity="center"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- EAN Searchable field -->
+            <it.jaschke.alexandria.views.SearchableEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:orientation="vertical">
+                android:inputType="number"
+                android:minEms="@integer/ean_width"
+                android:id="@+id/ean"
+                android:saveEnabled="true"
+                android:maxLength="@integer/ean_size"
+                android:maxLines="1"
+                android:hint="@string/input_hint"
+                custom:met_baseColor="@color/flat_black"
+                custom:met_primaryColor="@color/peter_river"
+                custom:met_floatingLabel="highlight"/>
 
-                <!-- Awesome View title -->
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="EASILY ADD BOOKS TO YOUR LIBRARY"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginBottom="40dp"
-                    android:gravity="center"/>
+            <com.pnikosis.materialishprogress.ProgressWheel
+                android:id="@+id/progress_wheel"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginBottom="20dp"
+                android:layout_alignParentRight="true"
+                wheel:matProg_barColor="@color/peter_river"
+                wheel:matProg_progressIndeterminate="true" />
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                <!-- EAN Searchable field -->
-                <it.jaschke.alexandria.views.SearchableEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:minEms="@integer/ean_width"
-                    android:id="@+id/ean"
-                    android:saveEnabled="true"
-                    android:maxLength="@integer/ean_size"
-                    android:maxLines="1"
-                    android:hint="@string/input_hint"
-                    custom:met_baseColor="@color/flat_black"
-                    custom:met_primaryColor="@color/peter_river"
-                    custom:met_floatingLabel="highlight"/>
+        </RelativeLayout>
 
-                <com.pnikosis.materialishprogress.ProgressWheel
-                    android:id="@+id/progress_wheel"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="20dp"
-                    android:layout_alignParentRight="true"
-                    wheel:matProg_barColor="@color/peter_river"
-                    wheel:matProg_progressIndeterminate="true" />
+        <!-- Or -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="30dp">
 
-                </RelativeLayout>
+            <View
+                android:layout_width="25dp"
+                android:layout_height="1dp"
+                android:background="@color/asbestos"
+                android:layout_gravity="center"
+                android:layout_marginRight="20dp"/>
 
-                <!-- Or -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_margin="30dp">
-
-                    <View
-                        android:layout_width="25dp"
-                        android:layout_height="1dp"
-                        android:background="@color/asbestos"
-                        android:layout_gravity="center"
-                        android:layout_marginRight="20dp"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:textStyle="italic"
-                        android:textColor="@color/asbestos"
-                        android:textSize="18sp"
-                        android:text="Or"/>
-
-                    <View
-                        android:layout_width="25dp"
-                        android:layout_height="1dp"
-                        android:background="@color/asbestos"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="20dp"/>
-
-                </LinearLayout>
-
-                <!-- Scan Button -->
-                <Button
-                    android:id="@+id/scan_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/scan_button"
-                    android:elevation="5dp"
-                    style="@style/mainButtonStyle"
-                    />
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-
-
-            </RelativeLayout>
-
-            <!-- Panel for displaying book data -->
-            <it.jaschke.alexandria.views.BookDataPanel
-                android:id="@+id/book_data_panel"
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"/>
+                android:layout_gravity="center"
+                android:textStyle="italic"
+                android:textColor="@color/asbestos"
+                android:textSize="18sp"
+                android:text="@string/or"/>
+
+            <View
+                android:layout_width="25dp"
+                android:layout_height="1dp"
+                android:background="@color/asbestos"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"/>
+
+        </LinearLayout>
+
+        <!-- Scan Button -->
+        <Button
+            android:id="@+id/scan_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/scan_button"
+            android:elevation="5dp"
+            style="@style/mainButtonStyle"
+            />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </RelativeLayout>
+
+    <!-- Panel for displaying book data -->
+    <it.jaschke.alexandria.views.BookDataPanel
+        android:id="@+id/book_data_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"/>
 
     <!-- Scanner container -->
     <FrameLayout

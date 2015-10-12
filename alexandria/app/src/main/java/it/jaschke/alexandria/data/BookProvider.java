@@ -216,7 +216,6 @@ public class BookProvider extends ContentProvider {
                 } else {
                     throw new android.database.SQLException("Failed to insert row into " + uri);
                 }
-                //getContext().getContentResolver().notifyChange(AlexandriaContract.BookEntry.buildFullBookUri(_id), null);
                 break;
             }
             case AUTHOR: {
@@ -270,10 +269,9 @@ public class BookProvider extends ContentProvider {
         }
         // Because a null deletes all rows
         if (selection == null || rowsDeleted != 0) {
-
-            Log.d("TAG", "URI: " + uri);
-            getContext().getContentResolver().notifyChange(uri.buildUpon().appendPath("/delete").build(), null);
+            getContext().getContentResolver().notifyChange(uri, null);
         }
+
         return rowsDeleted;
     }
 

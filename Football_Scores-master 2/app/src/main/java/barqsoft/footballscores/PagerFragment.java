@@ -154,4 +154,15 @@ public class PagerFragment extends Fragment {
             }
         }
     }
+
+    /**
+     * Notifies the Fragments about the error
+     */
+    public void onError() {
+        for (int i = 0; i < NUM_PAGES; i++) {
+            if (mViewFragments[i] != null) {
+                mViewFragments[i].onError();
+            }
+        }
+    }
 }

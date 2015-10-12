@@ -2,10 +2,33 @@ package barqsoft.footballscores;
 
 import android.content.Context;
 
+import java.util.TreeSet;
+
 /**
  * Created by yehya khaled on 3/3/2015.
  */
 public class Utilies {
+
+
+    private static TreeSet<String> mLeagues = new TreeSet<>();
+
+    static {
+        mLeagues.add(AppConfig.BUNDESLIGA1);
+        mLeagues.add(AppConfig.BUNDESLIGA2);
+        mLeagues.add(AppConfig.BUNDESLIGA3);
+        mLeagues.add(AppConfig.LIGUE1);
+        mLeagues.add(AppConfig.LIGUE2);
+        mLeagues.add(AppConfig.PREMIER_LEAGUE);
+        mLeagues.add(AppConfig.PRIMERA_DIVISION);
+        mLeagues.add(AppConfig.SEGUNDA_DIVISION);
+        mLeagues.add(AppConfig.SERIE_A);
+        mLeagues.add(AppConfig.PRIMERA_LIGA);
+        mLeagues.add(AppConfig.EREDIVISIE);
+    }
+
+    public static boolean checkProcessLeague(String leagueId) {
+        return mLeagues.contains(leagueId);
+    }
 
     /**
      * Gets the League name from its id
@@ -22,12 +45,24 @@ public class Utilies {
                 return context.getString(R.string.league_serie_a);
             case AppConfig.PREMIER_LEAGUE:
                 return context.getString(R.string.league_premiere_league);
+            case AppConfig.PRIMERA_LIGA:
+                return context.getString(R.string.league_primera_liga);
             case AppConfig.PRIMERA_DIVISION:
                 return context.getString(R.string.league_primera_division);
             case AppConfig.BUNDESLIGA1:
                 return context.getString(R.string.league_bundesliga);
             case AppConfig.BUNDESLIGA2:
                 return context.getString(R.string.league_bundesliga);
+            case AppConfig.BUNDESLIGA3:
+                return context.getString(R.string.league_bundesliga);
+            case AppConfig.LIGUE1:
+                return context.getString(R.string.league_ligue1);
+            case AppConfig.LIGUE2:
+                return context.getString(R.string.league_ligue2);
+            case AppConfig.EREDIVISIE:
+                return context.getString(R.string.league_erediviste);
+            case AppConfig.SEGUNDA_DIVISION:
+                return context.getString(R.string.league_segunda_division);
             default:
                 return context.getString(R.string.league_unknown);
         }

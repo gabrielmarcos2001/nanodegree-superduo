@@ -2,6 +2,7 @@ package it.jaschke.alexandria;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,7 @@ import android.view.ViewGroup;
 import it.jaschke.alexandria.data.Book;
 
 
-public class About extends Fragment implements AlexandriaFragment {
+public class About extends Fragment {
 
     public About() {
     }
@@ -28,13 +29,4 @@ public class About extends Fragment implements AlexandriaFragment {
         activity.setTitle(R.string.about);
     }
 
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
-    public void newBookDataFetched(Book book) {
-
-    }
 }
