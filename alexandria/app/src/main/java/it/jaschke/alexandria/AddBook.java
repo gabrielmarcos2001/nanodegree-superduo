@@ -223,20 +223,25 @@ public class AddBook extends SearchableFragment implements LoaderManager.LoaderC
 
         bookData.ean = mEanTextField.getText().toString();
 
-        String authors[] = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR)).split(",");
-        String categories[] = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY)).split(",");
+        if (data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR)) != null) {
+            String authors[] = data.getString(data.getColumnIndex(AlexandriaContract.AuthorEntry.AUTHOR)).split(",");
+
+            for (int i = 0; i < authors.length; i++) {
+                bookData.authors.add(authors[i]);
+            }
+        }
+
+        if (data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY)) != null) {
+            String categories[] = data.getString(data.getColumnIndex(AlexandriaContract.CategoryEntry.CATEGORY)).split(",");
+
+            for (int i = 0; i < categories.length; i++) {
+                bookData.categories.add(categories[i]);
+            }
+        }
 
         bookData.title = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.TITLE));
         bookData.subTitle = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.SUBTITLE));
         bookData.imageUrl = data.getString(data.getColumnIndex(AlexandriaContract.BookEntry.IMAGE_URL));
-
-        for (int i = 0; i < authors.length; i++) {
-            bookData.authors.add(authors[i]);
-        }
-
-        for (int i = 0; i < categories.length; i++) {
-            bookData.categories.add(categories[i]);
-        }
 
         // Sets the book data to the panel
         mEanTextField.setEnabled(false);
