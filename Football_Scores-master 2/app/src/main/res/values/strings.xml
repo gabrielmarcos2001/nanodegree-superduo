@@ -27,9 +27,11 @@
     <string name="matchDay">Match Day</string>
     <string name="prev">PREV</string>
     <string name="next">NEXT</string>
+    <string name="refresh">REFRESH</string>
 
     <string name="description_prev">Previous</string>
     <string name="description_next">Next</string>
+    <string name="description_refresh">Force Refresh</string>
     <string name="empty_image">Empty Image</string>
 
     <string name="about_text">

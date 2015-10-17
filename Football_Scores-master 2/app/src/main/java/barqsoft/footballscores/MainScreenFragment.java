@@ -9,18 +9,22 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import barqsoft.footballscores.model.Match;
+import barqsoft.footballscores.widget.WidgetProvider;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -107,6 +111,33 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
             mEmptyView.setVisibility(View.VISIBLE);
         }else {
             mEmptyView.setVisibility(View.GONE);
+        }
+
+        Calendar calendar = Calendar.getInstance();
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        if (formatter.format(calendar.getTime()).equals(mFragmentDate[0])) {
+
+            // We send the data to the Widget if it is from today
+            ArrayList<Parcelable> matchList = new ArrayList<>();
+            while (cursor.moveToNext()) {
+
+                Match match = new Match();
+                match.homeName = cursor.getString(ScoresAdapter.COL_HOME);
+                match.awayName = cursor.getString(ScoresAdapter.COL_AWAY);
+                ;
+                match.date = cursor.getString(ScoresAdapter.COL_DATE);
+                match.homeGoals = Integer.valueOf(cursor.getString(ScoresAdapter.COL_HOME_GOALS));
+                match.awayGoals = Integer.valueOf(cursor.getString(ScoresAdapter.COL_AWAY_GOALS));
+                match.homeId = Integer.valueOf(cursor.getString(ScoresAdapter.COL_HOME_ID));
+                match.awayId = Integer.valueOf(cursor.getString(ScoresAdapter.COL_AWAY_ID));
+                matchList.add(match);
+
+            }
+
+            Intent dataUpdatedIntent = new Intent(WidgetProvider.ACTION_DATA_UPDATED);
+            dataUpdatedIntent.putParcelableArrayListExtra("matches", matchList);
+            getActivity().sendBroadcast(dataUpdatedIntent);
         }
 
     }

@@ -6,6 +6,8 @@ import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
+import android.view.View;
 import android.widget.RemoteViews;
 
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class WidgetProvider extends AppWidgetProvider {
     public static final String ACTION_DATA_UPDATED = "com.bargsfot.footballscores.ACTION_DATA_UPDATED";
     public static final String ACTION_PREV_CLICKED = "com.bargsfot.footballscores.ACTION_PREV";
     public static final String ACTION_NEXT_CLICKED = "com.bargsfot.footballscores.ACTION_NEXT";
+    public static final String ACTION_FORCE_REFRESH = "com.bargsfot.footballscores.ACTION_FORCE_REFRESH";
 
 
     @Override
@@ -53,6 +56,7 @@ public class WidgetProvider extends AppWidgetProvider {
             widgetView.setOnClickPendingIntent(R.id.data_container, pendingIntent);
             widgetView.setOnClickPendingIntent(R.id.prev, getPendingSelfIntent(context,ACTION_PREV_CLICKED));
             widgetView.setOnClickPendingIntent(R.id.next, getPendingSelfIntent(context,ACTION_NEXT_CLICKED));
+            widgetView.setOnClickPendingIntent(R.id.refresh, getPendingSelfIntent(context,ACTION_FORCE_REFRESH));
 
             appWidgetManager.updateAppWidget(appWidgetIds[i], widgetView);
         }
@@ -148,6 +152,11 @@ public class WidgetProvider extends AppWidgetProvider {
             }
 
             appWidgetManager.updateAppWidget(appWidgetIds,widgetView);
+
+        }else if (ACTION_FORCE_REFRESH.equals(intent.getAction())){
+            // We query for the data
+            Intent scoresService = new Intent(context, DataFetchService.class);
+            context.startService(scoresService);
         }
 
     }
@@ -169,8 +178,11 @@ public class WidgetProvider extends AppWidgetProvider {
             widgetView.setImageViewResource(R.id.home_crest, Utilies.getTeamCrestByTeamId(0));
             widgetView.setImageViewResource(R.id.away_crest, Utilies.getTeamCrestByTeamId(0));
 
+            widgetView.setViewVisibility(R.id.empty_view, View.VISIBLE);
+
         }else {
 
+            widgetView.setViewVisibility(R.id.empty_view, View.INVISIBLE);
             widgetView.setTextViewText(R.id.home_name,matchData.homeName);
             widgetView.setTextViewText(R.id.away_name,matchData.awayName);
             widgetView.setTextViewText(R.id.data_textview,context.getString(R.string.today));
