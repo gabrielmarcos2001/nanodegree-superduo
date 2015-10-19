@@ -60,7 +60,7 @@ public class DataFetchService extends IntentService {
         }
 
         // Gets the data for the next 2 days
-        getData("n2");
+        //getData("n2");
 
         // Gets the data for 2 days in the past
         getData("p2");
@@ -198,31 +198,30 @@ public class DataFetchService extends IntentService {
         String matchId;
         String matchDay;
 
-        boolean todayScore = false;
+        // Flag used for checking if the score is for the current date
+        boolean todayScore;
 
         try {
 
             JSONObject jsonObject = new JSONObject(jsonData);
-            String timeFrameStart = jsonObject.getString("timeFrameStart");
 
-            // Checks if the scores we are currently displaying are
-            // for today
+            // Gets the current date formatted
             Date today = Calendar.getInstance().getTime();
             SimpleDateFormat todayDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             String todayFormatted = todayDateFormat.format(today);
 
-            ArrayList<Parcelable> matchList = new ArrayList<>();
-
-            if (timeFrameStart.equals(todayFormatted)) {
-                todayScore = true;
-            }
+            // List of matches for the current date - We sent these to the Widget
+            ArrayList<Parcelable> currentDateMatchList = new ArrayList<>();
 
             JSONArray matches = jsonObject.getJSONArray(FIXTURES);
 
             //ContentValues to be inserted
             Vector<ContentValues> values = new Vector<>(matches.length());
 
+            // Process every match returned by the api
             for (int i = 0; i < matches.length(); i++) {
+
+                todayScore = false;
 
                 JSONObject matchData = matches.getJSONObject(i);
                 leagueId = matchData.getJSONObject(LINKS).getJSONObject(SOCCER_SEASON).
@@ -261,6 +260,11 @@ public class DataFetchService extends IntentService {
                     date = date.substring(0, date.indexOf("T"));
                     SimpleDateFormat matchDate = new SimpleDateFormat("yyyy-MM-ddHH:mm:ss");
                     matchDate.setTimeZone(TimeZone.getTimeZone("UTC"));
+
+                    // Checks if the Score if for today
+                    if (date.equals(todayFormatted)) {
+                        todayScore = true;
+                    }
 
                     try {
 
@@ -313,24 +317,19 @@ public class DataFetchService extends IntentService {
                         match.awayGoals = Integer.valueOf(awayGoals);
                         match.homeId = Integer.valueOf(homeId);
                         match.awayId = Integer.valueOf(awayId);
-                        matchList.add(match);
+                        currentDateMatchList.add(match);
                     }
 
                     values.add(match_values);
                 }
             }
 
-            if (todayScore) {
-
-                // Every time the service updates and we are processing the scores
-                // for today we send a broadcast message so we can update the widget
-                // with the scores information
-
-                Intent dataUpdatedIntent = new Intent(WidgetProvider.ACTION_DATA_UPDATED);
-                dataUpdatedIntent.putParcelableArrayListExtra("matches",matchList);
-                sendBroadcast(dataUpdatedIntent);
-
-            }
+            // Every time the service updates and we are processing the scores
+            // for today we send a broadcast message so we can update the widget
+            // with the scores information
+            Intent dataUpdatedIntent = new Intent(WidgetProvider.ACTION_DATA_UPDATED);
+            dataUpdatedIntent.putParcelableArrayListExtra("matches",currentDateMatchList);
+            sendBroadcast(dataUpdatedIntent);
 
             ContentValues[] insert_data = new ContentValues[values.size()];
             values.toArray(insert_data);

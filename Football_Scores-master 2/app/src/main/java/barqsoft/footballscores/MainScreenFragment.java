@@ -125,7 +125,6 @@ public class MainScreenFragment extends Fragment implements LoaderManager.Loader
                 Match match = new Match();
                 match.homeName = cursor.getString(ScoresAdapter.COL_HOME);
                 match.awayName = cursor.getString(ScoresAdapter.COL_AWAY);
-                ;
                 match.date = cursor.getString(ScoresAdapter.COL_DATE);
                 match.homeGoals = Integer.valueOf(cursor.getString(ScoresAdapter.COL_HOME_GOALS));
                 match.awayGoals = Integer.valueOf(cursor.getString(ScoresAdapter.COL_AWAY_GOALS));
