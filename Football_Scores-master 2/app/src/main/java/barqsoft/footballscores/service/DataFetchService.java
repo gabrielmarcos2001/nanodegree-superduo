@@ -60,7 +60,7 @@ public class DataFetchService extends IntentService {
         }
 
         // Gets the data for the next 2 days
-        //getData("n2");
+        getData("n2");
 
         // Gets the data for 2 days in the past
         getData("p2");
